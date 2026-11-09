@@ -3,9 +3,9 @@ import {
   LayoutDashboard,
   FileSearch,
   History,
-  Users,
   Settings,
   Sparkles,
+  Users,
   ArrowUpRight,
   FileText,
   CalendarDays,
@@ -21,7 +21,6 @@ const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/", active: true },
   { name: "New Analysis", icon: FileSearch, href: "/analyze", active: false },
   { name: "Analysis History", icon: History, href: "/history", active: false },
-  { name: "Candidates", icon: Users, href: "/candidates", active: false },
 ];
 
 function formatDate(date: Date) {

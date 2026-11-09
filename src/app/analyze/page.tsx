@@ -183,12 +183,28 @@ export default function AnalyzePage() {
         ? "text-amber-600 dark:text-amber-400"
         : "text-red-600 dark:text-red-400";
 
+  const scoreRingColor =
+    matchScore >= 80
+      ? "stroke-emerald-500"
+      : matchScore >= 60
+        ? "stroke-amber-500"
+        : "stroke-red-500";
+
+  const scoreBarColor =
+    matchScore >= 80
+      ? "bg-emerald-500"
+      : matchScore >= 60
+        ? "bg-amber-500"
+        : "bg-red-500";
+
   const scoreLabel =
     matchScore >= 80
       ? "Strong Match"
       : matchScore >= 60
         ? "Moderate Match"
         : "Low Match";
+
+  const scoreCircumference = 2 * Math.PI * 54;
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
@@ -476,19 +492,66 @@ export default function AnalyzePage() {
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
 
-                <div className="flex h-36 w-36 shrink-0 flex-col items-center justify-center rounded-full border-[9px] border-indigo-100 bg-indigo-50/40 dark:border-indigo-500/20 dark:bg-indigo-500/5">
-                  <span className={`text-4xl font-bold tracking-tight ${scoreColor}`}>
-                    {matchScore}
-                  </span>
+                {/* Animated circular score indicator */}
+                <div
+                  className="relative flex h-36 w-36 shrink-0 items-center justify-center"
+                  role="img"
+                  aria-label={`Candidate match score: ${matchScore} out of 100. ${scoreLabel}.`}
+                >
+                  <svg
+                    viewBox="0 0 120 120"
+                    className="absolute inset-0 h-full w-full"
+                    aria-hidden="true"
+                  >
+                    {/* Background ring */}
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="54"
+                      fill="none"
+                      stroke="currentColor"
+                      className="text-slate-200 dark:text-slate-800"
+                      strokeWidth="9"
+                    />
 
-                  <span className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    out of 100
-                  </span>
+                    {/* Score progress ring */}
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="54"
+                      fill="none"
+                      stroke="currentColor"
+                      className={`${scoreRingColor} transition-all duration-1000 ease-out`}
+                      strokeWidth="9"
+                      strokeLinecap="round"
+                      strokeDasharray={scoreCircumference}
+                      strokeDashoffset={
+                        scoreCircumference * (1 - matchScore / 100)
+                      }
+                      transform="rotate(-90 60 60)"
+                    />
+                  </svg>
+
+                  {/* Score text */}
+                  <div className="relative flex flex-col items-center justify-center">
+                    <span
+                      className={`text-4xl font-bold tracking-tight ${scoreColor}`}
+                    >
+                      {matchScore}
+                    </span>
+
+                    <span className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
+                      out of 100
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <Target size={20} className="text-indigo-600 dark:text-indigo-400" />
+                    <Target
+                      size={20}
+                      className={scoreColor}
+                    />
 
                     <h3 className="text-lg font-semibold tracking-tight">
                       Candidate Match Score
@@ -522,7 +585,7 @@ export default function AnalyzePage() {
                   aria-label="Candidate match score"
                 >
                   <div
-                    className="h-full rounded-full bg-indigo-600 transition-all duration-700"
+                    className={`h-full rounded-full ${scoreBarColor} transition-all duration-700`}
                     style={{ width: `${matchScore}%` }}
                   />
                 </div>

@@ -40,3 +40,18 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*
+
+# Test resume fixtures
+src/lib/fixtures/
+
+# Local SQLite database
+dev.db
+dev.db-journal
+dev.db-wal
+dev.db-shm
+
+# Generated Prisma client
+/generated/
+
+# Test resume fixtures (may contain personal data)
+src/lib/fixtures/

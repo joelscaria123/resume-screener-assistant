@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model Analysis {
@@ -13,11 +13,9 @@ model Analysis {
   jobDescription     String
   matchScore         Int
   scoreRationale     String
-
   matchingSkills     String
   skillGaps          String
   interviewQuestions String
-
   createdAt          DateTime @default(now())
 
   @@index([matchScore])

@@ -14,6 +14,8 @@ import {
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { connection } from "next/server";
+import { Suspense } from "react";
 
 const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/", active: true },
@@ -44,7 +46,30 @@ function getScoreStyle(score: number) {
   return "bg-red-500/10 text-red-600 dark:text-red-400";
 }
 
-export default async function Home() {
+function DashboardLoading() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="text-center">
+        <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+        <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
+          Loading dashboard...
+        </p>
+      </div>
+    </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<DashboardLoading />}>
+      <DashboardContent />
+    </Suspense>
+  );
+}
+
+async function DashboardContent() {
+  await connection();
+
   let totalAnalyses = 0;
   let uniqueResumes = 0;
   let averageMatchScore = 0;

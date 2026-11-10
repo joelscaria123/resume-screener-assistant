@@ -6,6 +6,7 @@ import {
 } from "@/lib/analyze-input";
 import { extractResumeText } from "@/lib/resume-extractor";
 import { analyzeResume } from "@/lib/ai-screening";
+import { calculateResumeScore } from "@/lib/score-evaluation";
 import type { ResumeAnalysis } from "@/lib/analysis-schema";
 import { prisma } from "@/lib/prisma";
 
@@ -65,14 +66,18 @@ export async function POST(request: Request) {
       );
     }
 
-    // 5. Generate the AI resume analysis.
+    // 5. Generate the requirement-by-requirement AI evaluation.
+    // Gemini does not calculate the final match score.
     let analysis: ResumeAnalysis;
 
     try {
-      analysis = await analyzeResume(
+      const evaluation = await analyzeResume(
         jobDescriptionResult.data,
         extractedResumeText
       );
+
+      // 6. Calculate the final score using backend-defined weights.
+      analysis = calculateResumeScore(evaluation);
     } catch (error) {
       console.error("AI analysis failed:", error);
 
@@ -87,7 +92,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 6. Save the analysis to SQLite using Prisma.
+    // 7. Save the completed analysis to PostgreSQL using Prisma.
     const savedAnalysis = await prisma.analysis.create({
       data: {
         resumeName: resume.name,
@@ -102,7 +107,7 @@ export async function POST(request: Request) {
       },
     });
 
-    // 7. Return the completed and saved analysis.
+    // 8. Return the completed and saved analysis.
     return NextResponse.json(
       {
         success: true,

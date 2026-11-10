@@ -156,10 +156,11 @@ function AnalysisDetailsContent() {
         ? "bg-amber-500"
         : "bg-red-500";
 
-  const formattedDate = new Date(record.createdAt).toLocaleString("en-IN", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
+const formattedDate = new Date(record.createdAt).toLocaleString("en-IN", {
+  timeZone: "Asia/Kolkata",
+  dateStyle: "medium",
+  timeStyle: "short",
+});
 
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
